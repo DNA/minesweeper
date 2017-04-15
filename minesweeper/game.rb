@@ -6,9 +6,9 @@ module Minesweeper
   class Game
     ##
     # The initialize start the game.
-    def initialize(type: :custom, width: nil, height: nil, mines: nil)
+    def initialize(type: :custom, columns: nil, lines: nil, mines: nil)
       @board = if type == :custom
-                 Board.new(width: width, height: height, mines: mines)
+                 Board.new(columns: columns, lines: lines, mines: mines)
                else
                  Board.new(Board::SIZES[type])
                end

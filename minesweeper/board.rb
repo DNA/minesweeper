@@ -7,27 +7,27 @@ module Minesweeper
     # For more info check http://www.minesweeper.info/worldranking.html
     SIZES = {
       beginner: {
-        width: 8,
-        height: 8,
+        columns: 8,
+        lines: 8,
         mines: 10
       },
       intermediate: {
-        width: 16,
-        height: 16,
+        columns: 16,
+        lines: 16,
         mines: 40
       },
       expert: {
-        width: 30,
-        height: 16,
+        columns: 30,
+        lines: 16,
         mines: 99
       }
     }.freeze
 
     attr_accessor :grid
 
-    def initialize(width:, height:, mines:)
-      @width = width
-      @height = height
+    def initialize(columns:, lines:, mines:)
+      @columns = columns
+      @lines = lines
       @mines = mines
 
       validate_board
@@ -36,19 +36,19 @@ module Minesweeper
     def validate_board
       return if @mines <= max_mines
 
-      raise BoardError, "Exceeded mine count for #{@width}x#{@height} "\
+      raise BoardError, "Exceeded mine count for #{@columns}x#{@lines} "\
                         "board (max: #{max_mines})"
     end
 
     def max_mines
-      (@width - 1) * (@height - 1)
+      (@columns - 1) * (@lines - 1)
     end
 
     ##
     # If the board isn't initialized, send a default starter board
     def board_nil
-      Array.new(@width) do
-        Array.new(@height) do
+      Array.new(@columns) do
+        Array.new(@lines) do
           { state: :hidden }
         end
       end
