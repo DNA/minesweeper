@@ -5,7 +5,8 @@ module Minesweeper
     DEFAULT_SYMBOLS = {
       hidden: " \u2588",
       blank: '  ',
-      bomb: ' *'
+      bomb: ' *',
+      flag: ' ?'
     }.freeze
 
     def initialize(custom_symbols = {})
@@ -13,7 +14,7 @@ module Minesweeper
     end
 
     def print_board(grid, x_ray: false)
-      system 'clear' or system 'cls'
+      system('clear') || system('cls')
 
       header = '  '
       0.upto(grid[0].length - 1) { |i| header << " #{i}" }
@@ -21,15 +22,22 @@ module Minesweeper
 
       grid.each_with_index do |line, index|
         line_draw = line.map do |cell|
-          if cell[:state] == :hidden && !x_ray
-            @symbols[:hidden]
-          elsif cell[:type] == :number
-            " #{cell[:value]}"
-          else
-            @symbols[cell[:type]]
-          end
+          check_symbol(cell, x_ray)
         end
         puts "#{index} #{line_draw.join}"
+      end
+    end
+
+    def check_symbol(cell, x_ray)
+      unless x_ray
+        return @symbols[:hidden] if cell[:state] == :hidden
+        return @symbols[:flag] if cell[:state] == :flagged
+      end
+
+      if cell[:type] == :number
+        " #{cell[:value]}"
+      else
+        @symbols[cell[:type]]
       end
     end
   end
