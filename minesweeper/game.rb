@@ -32,6 +32,15 @@ module Minesweeper
 
       @state == :over if cell[:type] == :bomb
 
+      spread(column, line) if cell[:type] == :blank
+    end
+
+    ##
+    # When revealing a blank square, it's safe to revel everything around you,
+    def spread(column, line)
+      @board.neighbours(column, line).each do |cell|
+        click(cell[:column], cell[:line])
+      end
     end
 
     def still_playing?
