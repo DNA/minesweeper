@@ -27,7 +27,7 @@ module Minesweeper
       end
 
       cell = @board.cell(line, column)
-      return if cell.revealed_or_flagged?
+      return if cell.nil? || cell.revealed_or_flagged?
 
       cell.reveal
 
@@ -41,7 +41,7 @@ module Minesweeper
     def flag(line, column)
       return if @state == :new
 
-      @board.cell(line, column).flag
+      @board.cell(line, column)&.flag
 
       check_win_conditions
     end

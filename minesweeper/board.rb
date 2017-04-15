@@ -53,6 +53,8 @@ module Minesweeper
     end
 
     def cell(line, column)
+      return if line > @lines || column > @columns
+
       @grid[line][column]
     end
 
