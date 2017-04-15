@@ -3,9 +3,11 @@
 require_relative 'minesweeper'
 
 def action_prompt
-  print 'Select your action: 1: click / 2: flag (default: 1): '
+  print 'Select your action: 1: click / 2: flag / 3: chord (default: 1): '
   action = gets.chomp
   case action
+  when '3', 'chord'
+    :chord
   when '2', 'flag'
     :flag
   else

@@ -41,6 +41,16 @@ module Minesweeper
       @board.flag(column, line)
     end
 
+    def chord(column, line)
+      return if @state == :new
+
+      neighbourhood = @board.neighbours(column, line)
+      bomb_count = neighbourhood.select { |c| c[:type] == :bomb }.count
+      flag_count = neighbourhood.select { |c| c[:state] == :flagged }.count
+
+      spread(column, line) if flag_count >= bomb_count
+    end
+
     ##
     # When revealing a blank square, it's safe to revel everything around you,
     def spread(column, line)
