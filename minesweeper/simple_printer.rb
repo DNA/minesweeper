@@ -14,7 +14,7 @@ module Minesweeper
     end
 
     def print_board(grid, x_ray: false)
-      system('clear') || system('cls')
+      clear_cmd unless x_ray
 
       header = '  '
       0.upto(grid[0].length - 1) { |i| header << " #{i}" }
@@ -39,6 +39,10 @@ module Minesweeper
       else
         @symbols[cell[:type]]
       end
+    end
+
+    def clear_cmd
+      system('clear') || system('cls')
     end
   end
 end

@@ -29,11 +29,23 @@ def game_round(game, printer)
   game.send(action, column, line)
 end
 
+def game_end(game)
+  if game.victory?
+    puts 'Congratulations, you beat the board!'
+  else
+    puts 'Ouch, a bomb! Good luck nest time :('
+  end
+end
+
 def start_game(*args)
   game = Minesweeper::Game.new(*args)
   printer = Minesweeper::SimplePrinter.new
 
   game_round(game, printer) while game.still_playing?
+
+  game_end(game)
+
+  printer.print_board(game.board_state, x_ray: true)
 rescue Interrupt
   puts "\n\nThanks for playing!"
 end

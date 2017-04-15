@@ -17,7 +17,7 @@ module Minesweeper
     end
 
     def board_state
-      @board.grid || @board.board_nil
+      @board.grid
     end
 
     def click(column, line)
@@ -30,15 +30,19 @@ module Minesweeper
 
       cell = @board.reveal(column, line)
 
-      @state == :over if cell[:type] == :bomb
+      @state = :over if cell[:type] == :bomb
 
       spread(column, line) if cell[:type] == :blank
+
+      check_win_conditions
     end
 
     def flag(column, line)
       return if @state == :new
 
       @board.flag(column, line)
+
+      check_win_conditions
     end
 
     def chord(column, line)
@@ -59,8 +63,19 @@ module Minesweeper
       end
     end
 
+    def check_win_conditions
+      return if @board.tiles_left > @board.mines
+
+      @state = :over
+      @victory = :true
+    end
+
     def still_playing?
       @state != :over
+    end
+
+    def victory?
+      @victory
     end
   end
 end

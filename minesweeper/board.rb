@@ -23,7 +23,7 @@ module Minesweeper
       }
     }.freeze
 
-    attr_accessor :grid
+    attr_accessor :grid, :mines
 
     def initialize(columns:, lines:, mines:)
       @columns = columns
@@ -31,6 +31,8 @@ module Minesweeper
       @mines = mines
 
       validate_board
+
+      @grid = start_grid
     end
 
     def validate_board
@@ -45,8 +47,6 @@ module Minesweeper
     end
 
     def populate(column, line)
-      @grid = board_nil
-
       generate_bombs(column, line)
 
       numerize_grid
@@ -67,6 +67,10 @@ module Minesweeper
 
     def revealed_or_flagged?(column, line)
       %i(flagged visible).include? @grid[line][column][:state]
+    end
+
+    def tiles_left
+      @grid.flatten.delete_if { |c| c[:state] == :visible }.count
     end
 
     ##
@@ -144,8 +148,8 @@ module Minesweeper
     end
 
     ##
-    # If the board isn't initialized, send a default starter board
-    def board_nil
+    # If the board isn't initialized, set a default starter board
+    def start_grid
       Array.new(@lines) do
         Array.new(@columns) do
           { state: :hidden }
