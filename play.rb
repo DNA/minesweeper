@@ -2,14 +2,26 @@
 
 require_relative 'minesweeper'
 
-# game = Minesweeper::Game.new(type: :custom,
-#                              columns: 20,
-#                              lines: 20,
-#                              mines: 100)
-game = Minesweeper::Game.new(type: :beginner)
+def start_game(*args)
+  game = Minesweeper::Game.new(*args)
+  printer = Minesweeper::SimplePrinter.new
 
-Minesweeper::SimplePrinter.new.print_board(game.board_state)
+  while game.still_playing?
+    printer.print_board(game.board_state)
 
-game.click(4, 4)
+    print 'select the line to reveal: '
+    line = Integer(gets)
 
-Minesweeper::SimplePrinter.new.print_board(game.board_state, x_ray: true)
+    print 'select the column to reveal: '
+    column = Integer(gets)
+
+    game.click(column, line)
+  end
+rescue Interrupt
+  puts "\n\nThanks for playing!"
+end
+
+# start_game(type: :custom, columns: 20, lines: 20, mines: 100)
+start_game(type: :beginner)
+
+# printer.print_board(game.board_state, x_ray: true)

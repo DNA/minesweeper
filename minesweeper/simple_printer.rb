@@ -13,6 +13,8 @@ module Minesweeper
     end
 
     def print_board(grid, x_ray: false)
+      system 'clear' or system 'cls'
+
       header = '  '
       0.upto(grid[0].length - 1) { |i| header << " #{i}" }
       puts header

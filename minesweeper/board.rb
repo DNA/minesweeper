@@ -52,6 +52,15 @@ module Minesweeper
       numerize_grid
     end
 
+    def reveal(column, line)
+      @grid[line][column][:state] = :visible
+      @grid[line][column]
+    end
+
+    def revealed?(column, line)
+      @grid[line][column][:state] == :visible
+    end
+
     ##
     # Since the first click is never a bomb, we populare the board using the
     # first click col/line as a safe click
@@ -72,7 +81,7 @@ module Minesweeper
     def numerize_grid
       @grid.each_with_index do |line, line_index|
         line.each_with_index do |cell, column_index|
-          next if cell[:type] == :bomb
+          next if cell[:type] == :bomb # Don't overwrite bomb
 
           near_bombs = neighbours(column_index, line_index)
                        .select { |n| n[:type] == :bomb }

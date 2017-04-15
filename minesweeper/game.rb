@@ -13,6 +13,7 @@ module Minesweeper
                  Board.new(Board::SIZES[type])
                end
       @state = :new
+      @victory = false
     end
 
     def board_state
@@ -25,10 +26,16 @@ module Minesweeper
         @state = :started
       end
 
-      # return if @board.revealed?
+      return if @board.revealed?(column, line)
 
-      # cell = @board.reveal(column, line)
+      cell = @board.reveal(column, line)
 
+      @state == :over if cell[:type] == :bomb
+
+    end
+
+    def still_playing?
+      @state != :over
     end
   end
 end
