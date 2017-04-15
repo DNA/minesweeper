@@ -9,13 +9,22 @@ def start_game(*args)
   while game.still_playing?
     printer.print_board(game.board_state)
 
-    print 'select the line to reveal: '
+    print 'Select your action: 1: click / 2: flag (default: 1): '
+    action = gets.chomp
+    case action
+    when '2', 'flag'
+      action_method = :flag
+    else
+      action_method = :click
+    end
+
+    print 'select a line: '
     line = Integer(gets)
 
-    print 'select the column to reveal: '
+    print 'select a column: '
     column = Integer(gets)
 
-    game.click(column, line)
+    game.send(action_method, column, line)
   end
 rescue Interrupt
   puts "\n\nThanks for playing!"

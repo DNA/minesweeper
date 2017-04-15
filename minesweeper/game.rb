@@ -26,13 +26,19 @@ module Minesweeper
         @state = :started
       end
 
-      return if @board.revealed?(column, line)
+      return if @board.revealed_or_flagged?(column, line)
 
       cell = @board.reveal(column, line)
 
       @state == :over if cell[:type] == :bomb
 
       spread(column, line) if cell[:type] == :blank
+    end
+
+    def flag(column, line)
+      return if @state == :new
+
+      @board.flag(column, line)
     end
 
     ##

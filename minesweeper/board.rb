@@ -53,12 +53,20 @@ module Minesweeper
     end
 
     def reveal(column, line)
-      @grid[line][column][:state] = :visible
+      change_state column, line, :visible
+    end
+
+    def flag(column, line)
+      change_state column, line, :flagged
+    end
+
+    def change_state(column, line, state)
+      @grid[line][column][:state] = state
       @grid[line][column]
     end
 
-    def revealed?(column, line)
-      @grid[line][column][:state] == :visible
+    def revealed_or_flagged?(column, line)
+      %i(flagged visible).include? @grid[line][column][:state]
     end
 
     ##
