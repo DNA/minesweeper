@@ -47,7 +47,7 @@ module Minesweeper
     end
 
     def populate(column, line)
-      generate_bombs(column, line)
+      generate_mines(column, line)
 
       numerize_grid
     end
@@ -74,18 +74,18 @@ module Minesweeper
     end
 
     ##
-    # Since the first click is never a bomb, we populare the board using the
+    # Since the first click is never a mine, we populare the board using the
     # first click col/line as a safe click
-    def generate_bombs(column, line)
+    def generate_mines(column, line)
       generated_mines = 0
       while generated_mines < @mines
         rline = rand(@lines)
         rcol = rand(@columns)
 
-        next if @grid[rline][rcol][:type] == :bomb # Don't overwrite bomb
-        next if rline == line && rcol == column # Don't put bomb on safe click
+        next if @grid[rline][rcol][:type] == :mine # Don't overwrite mine
+        next if rline == line && rcol == column # Don't put mine on safe click
 
-        @grid[rline][rcol][:type] = :bomb
+        @grid[rline][rcol][:type] = :mine
         generated_mines += 1
       end
     end
@@ -93,15 +93,15 @@ module Minesweeper
     def numerize_grid
       @grid.each_with_index do |line, line_index|
         line.each_with_index do |cell, column_index|
-          next if cell[:type] == :bomb # Don't overwrite bomb
+          next if cell[:type] == :mine # Don't overwrite mine
 
-          near_bombs = neighbours(column_index, line_index)
-                       .select { |n| n[:type] == :bomb }
+          near_mines = neighbours(column_index, line_index)
+                       .select { |n| n[:type] == :mine }
                        .count
 
-          if near_bombs > 0
+          if near_mines > 0
             cell[:type] = :number
-            cell[:value] = near_bombs
+            cell[:value] = near_mines
           else
             cell[:type] = :blank
           end

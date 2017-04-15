@@ -5,7 +5,7 @@ module Minesweeper
     DEFAULT_SYMBOLS = {
       hidden: " \u2588",
       blank: '  ',
-      bomb: ' *',
+      mine: ' *',
       flag: ' ?'
     }.freeze
 

@@ -30,7 +30,7 @@ module Minesweeper
 
       cell = @board.reveal(column, line)
 
-      @state = :over if cell[:type] == :bomb
+      @state = :over if cell[:type] == :mine
 
       spread(column, line) if cell[:type] == :blank
 
@@ -49,10 +49,10 @@ module Minesweeper
       return if @state == :new
 
       neighbourhood = @board.neighbours(column, line)
-      bomb_count = neighbourhood.select { |c| c[:type] == :bomb }.count
+      mine_count = neighbourhood.select { |c| c[:type] == :mine }.count
       flag_count = neighbourhood.select { |c| c[:state] == :flagged }.count
 
-      spread(column, line) if flag_count >= bomb_count
+      spread(column, line) if flag_count >= mine_count
     end
 
     ##

@@ -33,7 +33,7 @@ def game_end(game)
   if game.victory?
     puts 'Congratulations, you beat the board!'
   else
-    puts 'Ouch, a bomb! Good luck nest time :('
+    puts 'Ouch, a mine! Good luck nest time :('
   end
 end
 
