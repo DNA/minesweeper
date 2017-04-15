@@ -59,4 +59,4 @@ rescue Interrupt
 end
 
 # start_game(type: :custom, columns: 20, lines: 20, mines: 100)
-start_game(type: :beginner)
+start_game(type: :expert)
