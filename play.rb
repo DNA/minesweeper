@@ -8,4 +8,6 @@ require_relative 'minesweeper'
 #                              mines: 100)
 game = Minesweeper::Game.new(type: :beginner)
 
-p game.board_state
+Minesweeper::SimplePrinter.new.print_board(game.board_state)
+
+Minesweeper::SimplePrinter.new.print_board(game.board_state, x_ray: true)
