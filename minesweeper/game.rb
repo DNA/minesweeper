@@ -13,5 +13,9 @@ module Minesweeper
                  Board.new(Board::SIZES[type])
                end
     end
+
+    def board_state
+      @board.grid || @board.board_nil
+    end
   end
 end

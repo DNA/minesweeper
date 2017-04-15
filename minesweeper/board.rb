@@ -23,6 +23,8 @@ module Minesweeper
       }
     }.freeze
 
+    attr_accessor :grid
+
     def initialize(width:, height:, mines:)
       @width = width
       @height = height
@@ -40,6 +42,16 @@ module Minesweeper
 
     def max_mines
       (@width - 1) * (@height - 1)
+    end
+
+    ##
+    # If the board isn't initialized, send a default starter board
+    def board_nil
+      Array.new(@width) do
+        Array.new(@height) do
+          { state: :hidden }
+        end
+      end
     end
   end
 end
