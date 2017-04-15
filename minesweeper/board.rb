@@ -25,7 +25,7 @@ module Minesweeper
 
     attr_accessor :grid, :mines
 
-    def initialize(columns:, lines:, mines:)
+    def initialize(lines:, columns:, mines:)
       @columns = columns
       @lines = lines
       @mines = mines
@@ -46,26 +46,26 @@ module Minesweeper
       (@columns - 1) * (@lines - 1)
     end
 
-    def populate(column, line)
-      generate_mines(column, line)
+    def populate(line, column)
+      generate_mines(line, column)
 
       numerize_grid
     end
 
-    def reveal(column, line)
-      change_state column, line, :visible
+    def reveal(line, column)
+      change_state line, column, :visible
     end
 
-    def flag(column, line)
-      change_state column, line, :flagged
+    def flag(line, column)
+      change_state line, column, :flagged
     end
 
-    def change_state(column, line, state)
+    def change_state(line, column, state)
       @grid[line][column][:state] = state
       @grid[line][column]
     end
 
-    def revealed_or_flagged?(column, line)
+    def revealed_or_flagged?(line, column)
       %i(flagged visible).include? @grid[line][column][:state]
     end
 
@@ -76,7 +76,7 @@ module Minesweeper
     ##
     # Since the first click is never a mine, we populare the board using the
     # first click col/line as a safe click
-    def generate_mines(column, line)
+    def generate_mines(line, column)
       generated_mines = 0
       while generated_mines < @mines
         rline = rand(@lines)
@@ -95,7 +95,7 @@ module Minesweeper
         line.each_with_index do |cell, column_index|
           next if cell[:type] == :mine # Don't overwrite mine
 
-          near_mines = neighbours(column_index, line_index)
+          near_mines = neighbours(line_index, column_index)
                        .select { |n| n[:type] == :mine }
                        .count
 
@@ -111,8 +111,8 @@ module Minesweeper
 
     ##
     # Return all adjacents cells from an specific cell
-    def neighbours(column, line)
-      min_col, max_col, min_line, max_line = bound_check(column, line)
+    def neighbours(line, column)
+      min_col, max_col, min_line, max_line = bound_check(line, column)
       neighbourhood = []
 
       # Iterate 3x3 block
@@ -129,7 +129,7 @@ module Minesweeper
 
     ##
     # Return min/max values for grid iteration
-    def bound_check(column, line)
+    def bound_check(line, column)
       # Columns bound-check
       min_col = 0
       min_col = column - 1 if column - 1 >= 0

@@ -2,7 +2,23 @@
 
 require_relative 'minesweeper'
 
-def action_prompt
+def line
+  print 'select a line: '
+  Integer(gets)
+rescue ArgumentError
+  puts 'Invalid value, try again'
+  line
+end
+
+def column
+  print 'select a column: '
+  Integer(gets)
+rescue ArgumentError
+  puts 'Invalid value, try again'
+  column
+end
+
+def action
   print 'Select your action: 1: click / 2: flag / 3: chord (default: 1): '
   action = gets.chomp
   case action
@@ -18,15 +34,7 @@ end
 def game_round(game, printer)
   printer.print_board(game.board_state)
 
-  action = action_prompt
-
-  print 'select a line: '
-  line = Integer(gets)
-
-  print 'select a column: '
-  column = Integer(gets)
-
-  game.send(action, column, line)
+  game.send(action, line, column)
 end
 
 def game_end(game)

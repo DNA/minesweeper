@@ -6,9 +6,9 @@ module Minesweeper
   class Game
     ##
     # The initialize start the game.
-    def initialize(type: :custom, columns: nil, lines: nil, mines: nil)
+    def initialize(type: :custom, lines: nil, columns: nil, mines: nil)
       @board = if type == :custom
-                 Board.new(columns: columns, lines: lines, mines: mines)
+                 Board.new(lines: lines, columns: columns, mines: mines)
                else
                  Board.new(Board::SIZES[type])
                end
@@ -20,46 +20,46 @@ module Minesweeper
       @board.grid
     end
 
-    def click(column, line)
+    def click(line, column)
       if @state == :new
-        @board.populate(column, line)
+        @board.populate(line, column)
         @state = :started
       end
 
-      return if @board.revealed_or_flagged?(column, line)
+      return if @board.revealed_or_flagged?(line, column)
 
-      cell = @board.reveal(column, line)
+      cell = @board.reveal(line, column)
 
       @state = :over if cell[:type] == :mine
 
-      spread(column, line) if cell[:type] == :blank
+      spread(line, column) if cell[:type] == :blank
 
       check_win_conditions
     end
 
-    def flag(column, line)
+    def flag(line, column)
       return if @state == :new
 
-      @board.flag(column, line)
+      @board.flag(line, column)
 
       check_win_conditions
     end
 
-    def chord(column, line)
+    def chord(line, column)
       return if @state == :new
 
-      neighbourhood = @board.neighbours(column, line)
+      neighbourhood = @board.neighbours(line, column)
       mine_count = neighbourhood.select { |c| c[:type] == :mine }.count
       flag_count = neighbourhood.select { |c| c[:state] == :flagged }.count
 
-      spread(column, line) if flag_count >= mine_count
+      spread(line, column) if flag_count >= mine_count
     end
 
     ##
     # When revealing a blank square, it's safe to revel everything around you,
-    def spread(column, line)
-      @board.neighbours(column, line).each do |cell|
-        click(cell[:column], cell[:line])
+    def spread(line, column)
+      @board.neighbours(line, column).each do |cell|
+        click(cell[:line], cell[:column])
       end
     end
 
