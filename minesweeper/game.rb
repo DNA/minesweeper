@@ -12,10 +12,23 @@ module Minesweeper
                else
                  Board.new(Board::SIZES[type])
                end
+      @state = :new
     end
 
     def board_state
       @board.grid || @board.board_nil
+    end
+
+    def click(column, line)
+      if @state == :new
+        @board.populate(column, line)
+        @state = :started
+      end
+
+      # return if @board.revealed?
+
+      # cell = @board.reveal(column, line)
+
     end
   end
 end

@@ -10,4 +10,6 @@ game = Minesweeper::Game.new(type: :beginner)
 
 Minesweeper::SimplePrinter.new.print_board(game.board_state)
 
+game.click(4, 4)
+
 Minesweeper::SimplePrinter.new.print_board(game.board_state, x_ray: true)
