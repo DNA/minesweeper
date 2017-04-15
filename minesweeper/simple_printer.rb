@@ -21,23 +21,21 @@ module Minesweeper
       puts header
 
       grid.each_with_index do |line, index|
-        line_draw = line.map do |cell|
-          check_symbol(cell, x_ray)
-        end
+        line_draw = line.map { |cell| check_symbol(cell, x_ray) }
         puts "#{index} #{line_draw.join}"
       end
     end
 
     def check_symbol(cell, x_ray)
       unless x_ray
-        return @symbols[:hidden] if cell[:state] == :hidden
-        return @symbols[:flag] if cell[:state] == :flagged
+        return @symbols[:hidden] if cell.hidden?
+        return @symbols[:flag] if cell.flagged?
       end
 
-      if cell[:type] == :number
-        " #{cell[:value]}"
+      if cell.number?
+        " #{cell.value}"
       else
-        @symbols[cell[:type]]
+        @symbols[cell.type]
       end
     end
 

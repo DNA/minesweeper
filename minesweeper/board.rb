@@ -52,25 +52,12 @@ module Minesweeper
       numerize_grid
     end
 
-    def reveal(line, column)
-      change_state line, column, :visible
-    end
-
-    def flag(line, column)
-      change_state line, column, :flagged
-    end
-
-    def change_state(line, column, state)
-      @grid[line][column][:state] = state
+    def cell(line, column)
       @grid[line][column]
     end
 
-    def revealed_or_flagged?(line, column)
-      %i(flagged visible).include? @grid[line][column][:state]
-    end
-
     def tiles_left
-      @grid.flatten.delete_if { |c| c[:state] == :visible }.count
+      @grid.flatten.delete_if(&:visible?).count
     end
 
     ##
@@ -82,29 +69,22 @@ module Minesweeper
         rline = rand(@lines)
         rcol = rand(@columns)
 
-        next if @grid[rline][rcol][:type] == :mine # Don't overwrite mine
+        next if @grid[rline][rcol].mine? # Don't overwrite mine
         next if rline == line && rcol == column # Don't put mine on safe click
 
-        @grid[rline][rcol][:type] = :mine
+        @grid[rline][rcol].type = :mine
         generated_mines += 1
       end
     end
 
     def numerize_grid
-      @grid.each_with_index do |line, line_index|
-        line.each_with_index do |cell, column_index|
-          next if cell[:type] == :mine # Don't overwrite mine
+      @grid.each_with_index do |line, l_idx|
+        line.each_with_index do |cell, c_idx|
+          next if cell.mine? # Don't overwrite mine
 
-          near_mines = neighbours(line_index, column_index)
-                       .select { |n| n[:type] == :mine }
-                       .count
+          near_mines = neighbours(l_idx, c_idx).select(&:mine?).count
 
-          if near_mines > 0
-            cell[:type] = :number
-            cell[:value] = near_mines
-          else
-            cell[:type] = :blank
-          end
+          cell.value = near_mines if near_mines > 0
         end
       end
     end
@@ -120,7 +100,8 @@ module Minesweeper
         (min_col..max_col).each do |c|
           next if l == line && c == column # Skip itself
 
-          neighbourhood << @grid[l][c].merge(line: l, column: c)
+          @grid[l][c].position(line: l, column: c)
+          neighbourhood << @grid[l][c]
         end
       end
 
@@ -150,11 +131,7 @@ module Minesweeper
     ##
     # If the board isn't initialized, set a default starter board
     def start_grid
-      Array.new(@lines) do
-        Array.new(@columns) do
-          { state: :hidden }
-        end
-      end
+      Array.new(@lines) { Array.new(@columns) { Cell.new } }
     end
   end
 end

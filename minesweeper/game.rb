@@ -26,13 +26,14 @@ module Minesweeper
         @state = :started
       end
 
-      return if @board.revealed_or_flagged?(line, column)
+      cell = @board.cell(line, column)
+      return if cell.revealed_or_flagged?
 
-      cell = @board.reveal(line, column)
+      cell.reveal
 
-      @state = :over if cell[:type] == :mine
+      @state = :over if cell.mine?
 
-      spread(line, column) if cell[:type] == :blank
+      spread(line, column) if cell.blank?
 
       check_win_conditions
     end
@@ -40,7 +41,7 @@ module Minesweeper
     def flag(line, column)
       return if @state == :new
 
-      @board.flag(line, column)
+      @board.cell(line, column).flag
 
       check_win_conditions
     end
@@ -49,8 +50,8 @@ module Minesweeper
       return if @state == :new
 
       neighbourhood = @board.neighbours(line, column)
-      mine_count = neighbourhood.select { |c| c[:type] == :mine }.count
-      flag_count = neighbourhood.select { |c| c[:state] == :flagged }.count
+      mine_count = neighbourhood.select(&:mine?).count
+      flag_count = neighbourhood.select(&:flagged?).count
 
       spread(line, column) if flag_count >= mine_count
     end
@@ -59,7 +60,7 @@ module Minesweeper
     # When revealing a blank square, it's safe to revel everything around you,
     def spread(line, column)
       @board.neighbours(line, column).each do |cell|
-        click(cell[:line], cell[:column])
+        click(cell.line, cell.column)
       end
     end
 
